@@ -1,0 +1,2 @@
+# Required for writing Excel workbook output (.xlsx)
+openpyxl>=3.1.0
