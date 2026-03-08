@@ -8,9 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -24,7 +22,9 @@ wheels/
 .installed.cfg
 *.egg
 
-# PyInstaller
+# PyInstaller build artifacts (temporary)
+source/dist/
+source/build_temp/
 *.manifest
 *.spec.tmp
 
@@ -64,11 +64,18 @@ venv.bak/
 .DS_Store
 Thumbs.db
 
-# Build artifacts
-build_temp/
-
-# Project specific
+# Project specific - input/output files
 *.xml
 !Example*.xml
 *.xlsx
 !Example*.xlsx
+
+# Keep releases folder structure but ignore large binaries during development
+# Uncomment the lines below if you don't want to track built executables
+# releases/windows/*.exe
+# releases/macos/*.app
+# releases/linux/SpectrumTek_Commissions_Converter
+
+# Abacus.AI generated files
+.abacus.donotdelete
+tags.json

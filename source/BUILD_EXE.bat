@@ -28,9 +28,11 @@ echo  Press any key to start building, or close this window to cancel.
 echo.
 pause >nul
 
-REM Change to the directory where this script is located
+REM Change to the directory where this script is located (source/)
 cd /d "%~dp0"
-set PROJECT_ROOT=%CD%
+set SOURCE_DIR=%CD%
+set PROJECT_ROOT=%SOURCE_DIR%\..
+set RELEASES_DIR=%PROJECT_ROOT%\releases\windows
 
 echo.
 echo  [Step 1/5] Checking Python installation...
@@ -86,17 +88,17 @@ echo.
 echo  [Step 3/5] Cleaning up old builds...
 echo  ------------------------------------
 
-if exist "%PROJECT_ROOT%\dist" (
+if exist "%SOURCE_DIR%\dist" (
     echo  Removing old dist folder...
-    rmdir /s /q "%PROJECT_ROOT%\dist" 2>nul
+    rmdir /s /q "%SOURCE_DIR%\dist" 2>nul
 )
-if exist "%PROJECT_ROOT%\build_temp" (
-    rmdir /s /q "%PROJECT_ROOT%\build_temp" 2>nul
+if exist "%SOURCE_DIR%\build_temp" (
+    rmdir /s /q "%SOURCE_DIR%\build_temp" 2>nul
 )
 
 REM Clean Python cache
-if exist "%PROJECT_ROOT%\__pycache__" rmdir /s /q "%PROJECT_ROOT%\__pycache__" 2>nul
-if exist "%PROJECT_ROOT%\sap_commissions_xml\__pycache__" rmdir /s /q "%PROJECT_ROOT%\sap_commissions_xml\__pycache__" 2>nul
+if exist "%SOURCE_DIR%\__pycache__" rmdir /s /q "%SOURCE_DIR%\__pycache__" 2>nul
+if exist "%SOURCE_DIR%\sap_commissions_xml\__pycache__" rmdir /s /q "%SOURCE_DIR%\sap_commissions_xml\__pycache__" 2>nul
 
 echo  SUCCESS: Cleaned up old files
 echo.
@@ -108,7 +110,7 @@ echo  This may take 1-3 minutes. Please be patient...
 echo.
 
 REM Run PyInstaller with the spec file
-pyinstaller build\spectrumtek_portable.spec --clean --noconfirm --workpath=build_temp --distpath=dist 2>&1
+pyinstaller build_config\spectrumtek_portable.spec --clean --noconfirm --workpath=build_temp --distpath=dist 2>&1
 
 if errorlevel 1 (
     color 0C
@@ -124,15 +126,21 @@ if errorlevel 1 (
 )
 
 REM Clean up temp build folder
-if exist "%PROJECT_ROOT%\build_temp" rmdir /s /q "%PROJECT_ROOT%\build_temp" 2>nul
+if exist "%SOURCE_DIR%\build_temp" rmdir /s /q "%SOURCE_DIR%\build_temp" 2>nul
 
 echo.
-echo  [Step 5/5] Verifying the build...
-echo  ---------------------------------
+echo  [Step 5/5] Verifying the build and copying to releases...
+echo  ---------------------------------------------------------
 
-if exist "%PROJECT_ROOT%\dist\SpectrumTek_Commissions_Converter.exe" (
+if exist "%SOURCE_DIR%\dist\SpectrumTek_Commissions_Converter.exe" (
+    REM Create releases directory if it doesn't exist
+    if not exist "%RELEASES_DIR%" mkdir "%RELEASES_DIR%"
+    
+    REM Copy to releases folder
+    copy "%SOURCE_DIR%\dist\SpectrumTek_Commissions_Converter.exe" "%RELEASES_DIR%\" >nul
+    
     REM Get file size
-    for %%A in ("%PROJECT_ROOT%\dist\SpectrumTek_Commissions_Converter.exe") do set EXE_SIZE=%%~zA
+    for %%A in ("%RELEASES_DIR%\SpectrumTek_Commissions_Converter.exe") do set EXE_SIZE=%%~zA
     set /a EXE_SIZE_MB=!EXE_SIZE!/1048576
     
     color 0A
@@ -145,7 +153,7 @@ if exist "%PROJECT_ROOT%\dist\SpectrumTek_Commissions_Converter.exe" (
     echo.
     echo  Your portable EXE has been created:
     echo.
-    echo    Location: %PROJECT_ROOT%\dist\
+    echo    Location: %RELEASES_DIR%\
     echo    Filename: SpectrumTek_Commissions_Converter.exe
     echo    Size:     ~!EXE_SIZE_MB! MB
     echo.
@@ -159,7 +167,7 @@ if exist "%PROJECT_ROOT%\dist\SpectrumTek_Commissions_Converter.exe" (
     
     set /p OPEN_FOLDER="  Would you like to open the output folder? (Y/N): "
     if /i "!OPEN_FOLDER!"=="Y" (
-        explorer "%PROJECT_ROOT%\dist"
+        explorer "%RELEASES_DIR%"
     )
 ) else (
     color 0C
@@ -181,7 +189,7 @@ echo  ============================================================
 echo  =                     BUILD FAILED                         =
 echo  ============================================================
 echo.
-echo  If you need help, please check the BUILD_GUIDE.md file
+echo  If you need help, please check the docs/BUILD_GUIDE.md file
 echo  or contact SpectrumTek support.
 echo.
 echo  Press any key to exit...

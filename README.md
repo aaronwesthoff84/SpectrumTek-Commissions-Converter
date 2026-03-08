@@ -1,87 +1,124 @@
-# Commissions XML Python V3
+# SpectrumTek Commissions Converter
 
-This folder contains the minimal Python-only version of the SAP Commissions XML parser.
+A GUI application for converting SAP Commissions XML exports to Excel workbooks.
 
-## Files
+## Project Structure
 
-- `parse_commissions_xml.py` - entry point
-- `sap_commissions_xml/` - parser package
-- `requirements.txt` - Python dependency list
-- `Example_Plan_For_Testing_D_B.xlsx` - example workbook output copied into this folder
-- `commissions-xml-ui.ps1` - UI wrapper for setup, run, ship, and exit
+```
+/
+├── README.md                    # This file
+├── docs/                        # Documentation
+│   └── BUILD_GUIDE.md          # Detailed build instructions
+├── source/                      # All source code and build scripts
+│   ├── gui_app.py              # Main GUI application
+│   ├── parse_commissions_xml.py # CLI entry point
+│   ├── sap_commissions_xml/    # Parser package
+│   ├── requirements.txt        # Python dependencies
+│   ├── BUILD_EXE.bat           # Windows build script
+│   ├── BUILD_APP.sh            # macOS build script
+│   ├── BUILD_LINUX.sh          # Linux build script
+│   └── build_config/           # PyInstaller specs & configs
+│       ├── spectrumtek_portable.spec
+│       ├── spectrumtek_macos.spec
+│       ├── spectrumtek_linux.spec
+│       ├── spectrumtek_installer.spec
+│       ├── installer.iss
+│       └── version_info.txt
+├── releases/                    # Final installers/executables
+│   ├── windows/                 # Windows .exe
+│   ├── macos/                   # macOS .app
+│   └── linux/                   # Linux binary
+├── assets/                      # Icons and branding
+└── .gitignore
+```
 
-## Setup
+## Quick Start
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+### For End Users
+
+Download the appropriate executable from the `releases/` folder for your platform and run it directly.
+
+### For Developers
+
+#### Prerequisites
+
+- Python 3.8 or higher
+- pip (Python package manager)
+
+#### Running from Source
+
+```bash
+cd source
 pip install -r requirements.txt
+python gui_app.py
 ```
 
-You can also use the UI controller:
+#### Building Executables
 
-```powershell
-.\commissions-xml-ui.ps1
+##### Windows
+```cmd
+cd source
+BUILD_EXE.bat
+```
+Output: `releases/windows/SpectrumTek_Commissions_Converter.exe`
+
+##### macOS
+```bash
+cd source
+chmod +x BUILD_APP.sh
+./BUILD_APP.sh
+```
+Output: `releases/macos/SpectrumTek Commissions Converter.app`
+
+##### Linux
+```bash
+cd source
+chmod +x BUILD_LINUX.sh
+./BUILD_LINUX.sh
+```
+Output: `releases/linux/SpectrumTek_Commissions_Converter`
+
+## Workflow
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/aaronwesthoff84/SpectrumTek-Commissions-Converter.git
+   cd SpectrumTek-Commissions-Converter
+   ```
+
+2. **Navigate to source directory**
+   ```bash
+   cd source
+   ```
+
+3. **Run the appropriate build script for your platform**
+   - Windows: Double-click `BUILD_EXE.bat`
+   - macOS: Run `./BUILD_APP.sh`
+   - Linux: Run `./BUILD_LINUX.sh`
+
+4. **Find your built executable in the releases folder**
+   - The build scripts automatically copy the final executable to `releases/<platform>/`
+
+5. **Commit and push if sharing the built installer**
+   ```bash
+   git add releases/
+   git commit -m "Add built executable for <platform>"
+   git push
+   ```
+
+## Command Line Usage
+
+For CLI usage without the GUI:
+
+```bash
+cd source
+python parse_commissions_xml.py "path/to/plan.xml" -o "output.xlsx"
 ```
 
-Menu 1:
+## Documentation
 
-- `Setup`
-- `Run`
-- `Ship`
-- `Exit`
+See `docs/BUILD_GUIDE.md` for detailed build instructions, troubleshooting, and customization options.
 
-Menu 2 after setup:
+## License
 
-- `Run`
-- `Exit`
-
-## Run
-
-Generate an Excel workbook from an SAP Commissions XML export:
-
-```powershell
-New-Item -ItemType Directory -Force .\generated | Out-Null
-python .\parse_commissions_xml.py "C:\path\to\plan.xml" -o ".\generated\parsed_plan.xlsx"
-```
-
-Generate CSV output instead of an Excel workbook:
-
-```powershell
-New-Item -ItemType Directory -Force .\generated | Out-Null
-python .\parse_commissions_xml.py "C:\path\to\plan.xml" -o ".\generated\output_csv" --format csv
-```
-
-## D&B Example
-
-This folder includes `Example_Plan_For_Testing_D_B.xlsx` as an example of the parser output.
-
-To run the parser against the matching D&B sample XML without modifying the shipped example file:
-
-```powershell
-New-Item -ItemType Directory -Force .\generated | Out-Null
-python .\parse_commissions_xml.py "C:\Users\Work\OneDrive - SPECTRUMTEK\Documents\Spectrum Internal\Tech\XML Tool\TestPython\Commissions-XML-mainV2\D&B\D_B_Plan.xml" -o ".\generated\Example_Plan_For_Testing_D_B.xlsx"
-```
-
-Compare the generated file to the shipped sample at `.\Example_Plan_For_Testing_D_B.xlsx`.
-
-## Ship
-
-For testing, keep local output in `generated\`. When you are ready to ship, use the `Ship` menu option in `.\commissions-xml-ui.ps1`. It creates the next version folder from a whitelist of approved product files only.
-
-Example from `V3`:
-
-- Run `.\commissions-xml-ui.ps1`
-- Choose `Ship`
-
-That creates `F:\projects\Commissions-XML-Python_V4` and copies only the shipped project files into it. Extra local files such as `generated\`, `.venv`, caches, scratch notes, or stray test files are left behind in the old version and are not copied.
-
-The shipped file set is:
-
-- `.gitignore`
-- `commissions-xml-ui.ps1`
-- `Example_Plan_For_Testing_D_B.xlsx`
-- `parse_commissions_xml.py`
-- `README.md`
-- `requirements.txt`
-- `sap_commissions_xml\`
+Copyright © SpectrumTek. All rights reserved.

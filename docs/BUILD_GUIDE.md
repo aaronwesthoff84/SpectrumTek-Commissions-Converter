@@ -4,14 +4,34 @@ This document provides instructions for building the SpectrumTek Commissions XML
 
 ---
 
-## 📦 Available Build Packages
+## 📁 Project Structure
 
-| Platform | Package | Contents |
-|----------|---------|----------|
-| **Windows** | `SpectrumTek_Windows_Build.zip` | Full source + `BUILD_EXE.bat` |
-| **macOS** | `SpectrumTek_macOS_Build.zip` | Full source + `BUILD_APP.sh` |
-| **Linux** | `SpectrumTek_Linux_Build.zip` | Full source + `BUILD_LINUX.sh` + Pre-built binary |
-| **Linux (Binary Only)** | `SpectrumTek_Linux_Binary.zip` | Ready-to-run Linux executable |
+```
+SpectrumTek-Commissions-Converter/
+├── README.md                      # Main readme
+├── docs/                          # Documentation
+│   └── BUILD_GUIDE.md             # This file
+├── source/                        # All source code and build scripts
+│   ├── gui_app.py                 # Main GUI application
+│   ├── parse_commissions_xml.py   # CLI entry point
+│   ├── requirements.txt           # Python dependencies
+│   ├── sap_commissions_xml/       # Parser package
+│   ├── BUILD_EXE.bat              # Windows build script
+│   ├── BUILD_APP.sh               # macOS build script
+│   ├── BUILD_LINUX.sh             # Linux build script
+│   └── build_config/              # PyInstaller specs & configs
+│       ├── spectrumtek_portable.spec
+│       ├── spectrumtek_macos.spec
+│       ├── spectrumtek_linux.spec
+│       ├── spectrumtek_installer.spec
+│       ├── installer.iss
+│       └── version_info.txt
+├── releases/                      # Final executables
+│   ├── windows/                   # Windows .exe output
+│   ├── macos/                     # macOS .app output
+│   └── linux/                     # Linux binary output
+└── assets/                        # Application icons
+```
 
 ---
 
@@ -24,14 +44,15 @@ This document provides instructions for building the SpectrumTek Commissions XML
 
 ### How to Build
 
-1. **Extract** `SpectrumTek_Windows_Build.zip` to any folder
-2. **Double-click** `BUILD_EXE.bat`
-3. **Wait** for the build to complete (1-3 minutes)
-4. **Find** your portable `.exe` in the `dist/` folder
+1. **Clone or download** the repository
+2. **Navigate** to the `source/` folder
+3. **Double-click** `BUILD_EXE.bat`
+4. **Wait** for the build to complete (1-3 minutes)
+5. **Find** your portable `.exe` in `releases/windows/`
 
 ### Output
 ```
-dist/
+releases/windows/
 └── SpectrumTek_Commissions_Converter.exe  (~25 MB)
 ```
 
@@ -58,10 +79,10 @@ brew install python3
 
 ### How to Build
 
-1. **Extract** `SpectrumTek_macOS_Build.zip` to any folder
-2. **Open Terminal** and navigate to the extracted folder:
+1. **Clone or download** the repository
+2. **Open Terminal** and navigate to the `source/` folder:
    ```bash
-   cd /path/to/extracted/folder
+   cd /path/to/SpectrumTek-Commissions-Converter/source
    ```
 3. **Make the script executable** (if needed):
    ```bash
@@ -72,11 +93,11 @@ brew install python3
    ./BUILD_APP.sh
    ```
 5. **Wait** for the build to complete (1-3 minutes)
-6. **Find** your `.app` bundle in the `dist/` folder
+6. **Find** your `.app` bundle in `releases/macos/`
 
 ### Output
 ```
-dist/
+releases/macos/
 └── SpectrumTek Commissions Converter.app  (~25 MB)
 ```
 
@@ -88,33 +109,19 @@ You can:
 ### Code Signing (Optional)
 For distribution outside the App Store, you may need to sign the app:
 ```bash
-codesign --force --deep --sign - "dist/SpectrumTek Commissions Converter.app"
+codesign --force --deep --sign - "releases/macos/SpectrumTek Commissions Converter.app"
 ```
 
 ---
 
 ## 🐧 Linux Build Instructions
 
-### Option A: Use the Pre-Built Binary (Easiest)
-
-1. **Extract** `SpectrumTek_Linux_Binary.zip` to any folder
-2. **Make executable** (if needed):
-   ```bash
-   chmod +x SpectrumTek_Commissions_Converter
-   ```
-3. **Run** the application:
-   ```bash
-   ./SpectrumTek_Commissions_Converter
-   ```
-
-### Option B: Build from Source
-
-#### Prerequisites
+### Prerequisites
 - Ubuntu 18.04+ / Debian 10+ / Fedora 32+ (or equivalent)
 - Python 3.8+
 - tkinter (for GUI support)
 
-#### Installing Dependencies
+### Installing Dependencies
 
 **Ubuntu/Debian:**
 ```bash
@@ -132,12 +139,12 @@ sudo dnf install python3 python3-pip python3-tkinter
 sudo pacman -S python python-pip tk
 ```
 
-#### How to Build
+### How to Build
 
-1. **Extract** `SpectrumTek_Linux_Build.zip` to any folder
-2. **Open Terminal** and navigate to the extracted folder:
+1. **Clone or download** the repository
+2. **Open Terminal** and navigate to the `source/` folder:
    ```bash
-   cd /path/to/extracted/folder
+   cd /path/to/SpectrumTek-Commissions-Converter/source
    ```
 3. **Make the script executable** (if needed):
    ```bash
@@ -148,47 +155,12 @@ sudo pacman -S python python-pip tk
    ./BUILD_LINUX.sh
    ```
 5. **Wait** for the build to complete (1-3 minutes)
-6. **Find** your executable in the `dist/` folder
+6. **Find** your executable in `releases/linux/`
 
 ### Output
 ```
-dist/
+releases/linux/
 └── SpectrumTek_Commissions_Converter  (~29 MB)
-```
-
----
-
-## 📁 Project File Structure
-
-```
-SpectrumTek_Commissions_Converter/
-├── gui_app.py                     # Main GUI application
-├── parse_commissions_xml.py       # CLI entry point
-├── requirements.txt               # Python dependencies
-├── README.md                      # User documentation
-├── README_BUILD.md                # This file
-│
-├── BUILD_EXE.bat                  # Windows build script
-├── BUILD_APP.sh                   # macOS build script
-├── BUILD_LINUX.sh                 # Linux build script
-│
-├── build/                         # PyInstaller spec files
-│   ├── spectrumtek_portable.spec  # Windows single-file spec
-│   ├── spectrumtek_installer.spec # Windows installer spec
-│   ├── spectrumtek_macos.spec     # macOS .app bundle spec
-│   ├── spectrumtek_linux.spec     # Linux single-file spec
-│   └── installer.iss              # Inno Setup script (Windows installer)
-│
-├── assets/                        # Application icons
-│   └── icon.ico                   # Windows icon
-│
-└── sap_commissions_xml/           # Parser package
-    ├── __init__.py
-    ├── parser.py
-    ├── writer.py
-    ├── logger.py
-    ├── function_parser.py
-    └── cli.py
 ```
 
 ---
@@ -203,9 +175,9 @@ SpectrumTek_Commissions_Converter/
 
 ### Version Number
 
-Edit the spec files in `build/` to update version information:
+Edit the spec files in `source/build_config/` to update version information:
 - macOS: Edit `CFBundleShortVersionString` and `CFBundleVersion` in `spectrumtek_macos.spec`
-- Windows: Edit `build/version_info.txt` (if present)
+- Windows: Edit `source/build_config/version_info.txt`
 
 ---
 
@@ -221,7 +193,7 @@ Edit the spec files in `build/` to update version information:
 
 ### Antivirus Blocking the Executable
 PyInstaller executables are sometimes flagged by antivirus. Solutions:
-- Add an exception for the `dist/` folder
+- Add an exception for the `releases/` folder
 - Submit a false positive report to your AV vendor
 
 ### Missing tkinter on Linux
@@ -236,7 +208,7 @@ sudo dnf install python3-tkinter
 ### macOS "App is Damaged" Warning
 If macOS shows this warning, run:
 ```bash
-xattr -cr "dist/SpectrumTek Commissions Converter.app"
+xattr -cr "releases/macos/SpectrumTek Commissions Converter.app"
 ```
 
 ---

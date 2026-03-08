@@ -4,26 +4,27 @@ PyInstaller spec file for SpectrumTek Commissions Converter - macOS Build
 
 This creates a macOS .app bundle that can be distributed to other macOS computers.
 
-Usage:
-    pyinstaller build/spectrumtek_macos.spec
+Usage (from source/ directory):
+    pyinstaller build_config/spectrumtek_macos.spec
 """
 
 import sys
 from pathlib import Path
 
-# Get the project root directory
-spec_dir = Path(SPECPATH).parent
-project_dir = spec_dir
+# Get the source directory (spec is in source/build_config/)
+spec_dir = Path(SPECPATH)
+source_dir = spec_dir.parent  # Go up from build_config/ to source/
+project_root = source_dir.parent  # Go up from source/ to project root
 
 block_cipher = None
 
 a = Analysis(
-    [str(project_dir / 'gui_app.py')],
-    pathex=[str(project_dir)],
+    [str(source_dir / 'gui_app.py')],
+    pathex=[str(source_dir)],
     binaries=[],
     datas=[
         # Include the sap_commissions_xml package
-        (str(project_dir / 'sap_commissions_xml'), 'sap_commissions_xml'),
+        (str(source_dir / 'sap_commissions_xml'), 'sap_commissions_xml'),
     ],
     hiddenimports=[
         'sap_commissions_xml',
@@ -95,10 +96,13 @@ coll = COLLECT(
     name='SpectrumTek_Commissions_Converter',
 )
 
+# Check for icon file
+icon_path = project_root / 'assets' / 'icon.icns'
+
 app = BUNDLE(
     coll,
     name='SpectrumTek Commissions Converter.app',
-    icon=str(project_dir / 'assets' / 'icon.icns') if (project_dir / 'assets' / 'icon.icns').exists() else None,
+    icon=str(icon_path) if icon_path.exists() else None,
     bundle_identifier='com.spectrumtek.commissions-converter',
     info_plist={
         'CFBundleName': 'SpectrumTek Commissions Converter',

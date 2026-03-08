@@ -7,26 +7,27 @@ This output is used by Inno Setup to create the Windows installer.
 Pros: Faster startup, smaller executable
 Cons: Multiple files to manage
 
-Usage:
-    pyinstaller build/spectrumtek_installer.spec
+Usage (from source/ directory):
+    pyinstaller build_config/spectrumtek_installer.spec
 """
 
 import sys
 from pathlib import Path
 
-# Get the project root directory
-spec_dir = Path(SPECPATH).parent
-project_dir = spec_dir
+# Get the source directory (spec is in source/build_config/)
+spec_dir = Path(SPECPATH)
+source_dir = spec_dir.parent  # Go up from build_config/ to source/
+project_root = source_dir.parent  # Go up from source/ to project root
 
 block_cipher = None
 
 a = Analysis(
-    [str(project_dir / 'gui_app.py')],
-    pathex=[str(project_dir)],
+    [str(source_dir / 'gui_app.py')],
+    pathex=[str(source_dir)],
     binaries=[],
     datas=[
         # Include the sap_commissions_xml package
-        (str(project_dir / 'sap_commissions_xml'), 'sap_commissions_xml'),
+        (str(source_dir / 'sap_commissions_xml'), 'sap_commissions_xml'),
     ],
     hiddenimports=[
         'sap_commissions_xml',
@@ -65,6 +66,10 @@ a = Analysis(
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
+# Check for icon and version info files
+icon_path = project_root / 'assets' / 'icon.ico'
+version_path = spec_dir / 'version_info.txt'
+
 exe = EXE(
     pyz,
     a.scripts,
@@ -81,8 +86,8 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=str(project_dir / 'assets' / 'icon.ico') if (project_dir / 'assets' / 'icon.ico').exists() else None,
-    version=str(project_dir / 'build' / 'version_info.txt') if (project_dir / 'build' / 'version_info.txt').exists() else None,
+    icon=str(icon_path) if icon_path.exists() else None,
+    version=str(version_path) if version_path.exists() else None,
 )
 
 coll = COLLECT(
