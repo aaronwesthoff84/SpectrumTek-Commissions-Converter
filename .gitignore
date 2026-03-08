@@ -64,6 +64,9 @@ venv.bak/
 .DS_Store
 Thumbs.db
 
+# Build artifacts
+build_temp/
+
 # Project specific
 *.xml
 !Example*.xml
