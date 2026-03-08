@@ -117,7 +117,8 @@ python parse_commissions_xml.py "path/to/plan.xml" -o "output.xlsx"
 
 ## Documentation
 
-See `docs/BUILD_GUIDE.md` for detailed build instructions, troubleshooting, and customization options.
+- **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Comprehensive guide for developers: architecture overview, file reference, modification scenarios, and troubleshooting
+- **[Build Guide](docs/BUILD_GUIDE.md)** - Detailed build instructions, customization, and troubleshooting
 
 ## License
 
