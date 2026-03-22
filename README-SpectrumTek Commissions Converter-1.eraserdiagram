@@ -1,0 +1,53 @@
+flowchart-diagram
+
+title SpectrumTek Commissions Converter
+direction right
+
+// Entry Points
+User launches application [shape: oval, icon: play, color: lightblue]
+
+// Input Selection
+Input Selection [color: blue, icon: file-text] {
+    Select XML file [icon: file-plus, color: blue]
+    Choose output folder [icon: folder, color: blue]
+}
+
+// Conversion Process
+Conversion Process [color: purple, icon: cpu] {
+    Parse XML file [icon: code, color: purple]
+    Identify node type [shape: diamond, icon: git-branch, color: purple]
+    Extract plans and components [icon: layers, color: purple]
+    Extract rules [icon: list, color: purple]
+    Extract tables and values [icon: database, color: purple]
+    Parse expressions and formulas [icon: terminal, color: purple]
+}
+
+// Output Generation
+Output Generation [color: green, icon: file-output] {
+    Build Excel workbook [icon: grid, color: green]
+    Write data sheets [icon: edit-3, color: green]
+    Add log sheet [icon: clipboard, color: green]
+}
+
+// Completion
+Conversion complete [shape: oval, icon: check-circle, color: lightgreen]
+Show results summary [icon: bar-chart-2, color: green]
+Open output folder [icon: folder, color: blue]
+
+// Relationships
+User launches application > Select XML file
+Select XML file > Choose output folder
+Choose output folder > Parse XML file
+Parse XML file > Identify node type
+Identify node type > Extract plans and components: Plans or Components
+Identify node type > Extract rules: Rules
+Identify node type > Extract tables and values: Tables or Values
+Extract plans and components > Parse expressions and formulas
+Extract rules > Parse expressions and formulas
+Extract tables and values > Parse expressions and formulas
+Parse expressions and formulas > Build Excel workbook
+Build Excel workbook > Write data sheets
+Write data sheets > Add log sheet
+Add log sheet > Conversion complete
+Conversion complete > Show results summary
+Show results summary > Open output folder
